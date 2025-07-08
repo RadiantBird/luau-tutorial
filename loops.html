@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>ループとは？ - なんとなくわかるLuau</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      padding: 2em;
+      background: #fff;
+      color: #222;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    code {
+      background-color: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    a {
+      color: #3f51b5;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+    a:hover {
+      border-bottom: 1px solid;
+      color: #e91e63;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>ループ（繰り返し）とは？</h1>
+
+  <p>
+    人間とはめんどくさがりです。<br>
+    何回も同じ作業をすることを嫌います。
+  </p>
+
+  <p>
+    でも大丈夫、コンピューターにはそんなこと楽勝です！<br>
+    例えば、何回も <code>print("こんにちは！")</code> って書くの、めんどくさいですよね？
+  </p>
+
+  <p>
+    それを解決してくれるのが <strong>while文とfor文</strong> です！
+  </p>
+
+  <h2>🔁 while文</h2>
+
+  <pre><code>local i = 1
+
+while i &lt; 5 do
+    print(i)
+    i = i + 1
+end</code></pre>
+
+  <p>
+    <code>i</code> というのは、<br>
+    繰り返す回数・部屋の番号みたいなイメージで、よく使われる「使い捨て変数」です。
+  </p>
+
+  <p>
+    実行すると、<code>1, 2, 3, 4</code> という感じに数字が4回出てきたと思います。
+  </p>
+
+  <p>
+    <code>while</code> 文は、<code>i &lt; 5</code> という条件が正しいあいだは<br>
+    <strong>何回でも繰り返す</strong>という命令です。
+  </p>
+
+  <p>
+    そして <code>i = i + 1</code> は、「今の <code>i</code> に 1 を足した新しい <code>i</code> を作るよ」という意味。<br>
+    これを忘れるとどうなるか？……
+  </p>
+
+  <p>
+    コンピューターが <em>「疲れたよおおおおお！！！」</em> と叫ぶ……<br>
+    つまり <strong>無限ループ</strong>になってしまうので、気をつけてください！
+  </p>
+
+  <h2>🌟 for文</h2>
+
+  <p>
+    次は <strong>for文</strong> です。<br>
+    今は使い所がよく分からなくても、後で輝くスターです。覚えてあげてください (・∀・)
+  </p>
+
+  <pre><code>for i = 1, 5 do
+    print(i)
+end</code></pre>
+
+  <p>
+    これは、「<strong>1番目から始めて、5番目で終わる</strong>」という意味です。<br>
+    なので、<code>1〜5</code> の数字が出てくるはず。
+  </p>
+
+  <p>
+    さっきの while 文は <code>i &lt; 5</code> が条件だったので、<code>5 &lt; 5</code> はウソ → 4回で終了でした。
+  </p>
+
+  <p>
+    単純に「〇回だけ繰り返したいな〜」というときは、<strong>for文の方が便利</strong>です！
+  </p>
+
+  <p>
+    コンピューターにお仕事させる基本の1つがループ。<br>
+    どんどん使いこなしてみましょう！
+  </p>
+
+  <p><a href="functions.html">▶ 次は「関数（function）」を学ぼう！</a></p>
+
+</body>
+</html>
