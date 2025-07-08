@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>テーブル（基礎） - なんとなくわかるLuau</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      max-width: 700px;
+      margin: 2em auto;
+      line-height: 1.8;
+      color: #333;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    pre {
+      background: #f0f0f0;
+      padding: 1em;
+      border-radius: 5px;
+      overflow-x: auto;
+    }
+    code {
+      font-family: monospace;
+      color: #d32f2f;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>テーブル（基礎）</h1>
+
+  <p>テーブルって聞いた瞬間、何を思い浮かべましたか？多分、食べ物を食べるときに使うあの平面のことを思い浮かべたと思います。Luauのテーブルも、そんな感覚でデータを並べられちゃいます！</p>
+
+  <p>ここまでやってきたあなたなら、多分こんなことになったことない？</p>
+
+  <pre><code>local x1 = 1
+local x2 = 2
+local x3 = 3
+print(x1)
+print(x2)
+print(x3)</code></pre>
+
+  <p>ああ、めんどくさい。変数も繰り返しができればいいのに。</p>
+
+  <p>そこでテーブルです！テーブルは、変数を並べたものだと今は思ってください。</p>
+
+  <p>使ってみよう:</p>
+
+  <pre><code>local A = {1, 2, 3}
+for i = 1, #A do
+    print(A[i])
+end</code></pre>
+
+  <p>めっちゃコンパクトになりましたね！</p>
+
+  <ul>
+    <li>1行目で 1, 2, 3 を A に順番に入れます</li>
+    <li>1番目から A の長さ分（3）繰り返すというのが <code>i = 1, #A</code> の意味です！</li>
+    <li>テーブルの前に <code>#</code> をつけると、特殊な場合を除いて長さを取得できます</li>
+    <li>3行目は A の i 番目を喋って、ということになります</li>
+  </ul>
+
+  <p>テーブルの外（この場合は 4 番目以降）を喋らせようとすると「そんなこと知らない！」（エラー）と赤文字で優しく教えてくれます。赤文字が出ても怖がらずに、翻訳してみると結構優しいんだなと気づけると思います。</p>
+
+  <p>これが for 文の使い方、スターになれたね！(・∀・)</p>
+
+  <p>次回は実際に世界（ゲーム内）に干渉していきます。準備ができたら次に行こう！まだ夢は始まったばかりです！</p>
+  <p><a href="CreatePart.html">パーツを召喚してみよう！</a></p>
+
+</body>
+</html>
