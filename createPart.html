@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>パーツを召喚してみよう！ - なんとなくわかるLuau</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      padding: 2em;
+      background: #fff;
+      color: #222;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    code {
+      background-color: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    a {
+      color: #3f51b5;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+    a:hover {
+      border-bottom: 1px solid;
+      color: #e91e63;
+    }
+  </style>
+</head>
+
+<body>
+    <h1>パーツを召喚してみよう！</h1>
+    <p>では今回は実際にゲーム内に干渉していきましょう！</p>
+    <p>さっそくコードです:</p>
+    <pre><code>
+        local part = Instance.new("Part")
+        part.Position = Vector3.new(0,50,0)
+        part.Parent = workspace
+        part.Name = "MyPart"
+        print("partが現れた!")
+    </code></pre>
+    <ul>
+        <li>1行目でパーツ(Part)をInstance.newという関数でつくります。</li>
+        <li>2行目でパーツの座標を決めます。Robloxでは、yが高さを表します。気をつけてください！</li>
+        <li>3行目で作ったpartをworkspaceというところに入れます。workspaceに入れると、それが世界に現れるようになります！<br>
+            .Parentという書き方はよく使うので、覚えておいてください。</li>
+        <li>4行目でパーツの名前を決めます。実行したあとExplorerを見ると、MyPartというのが出てきます。</li>
+    </ul>
+    <p>これでゲーム内に干渉する方法を一つ学びましたね！今まで学んできたfor文などを使って、複数個作ってみるのもいいでしょう。</p>
+    <p>次回はドアを作っていきますよ！</p>
+    <a href="createDoor.html">ドアを作ろう！</a>
+</body>
