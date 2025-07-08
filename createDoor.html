@@ -39,63 +39,78 @@
 </head>
 
 <body>
-    <h1>ドアを作ろう！</h1>
-    <p>前回はパーツを召喚することができましたね。</p>
-    <p>今回はゲーム内に事前にパーツを置いておきます。</p>
-    <p>上のバーのPart(パーツ)クリックして追加して、拡大/縮小で形を整えてあげてください。</p>
-    <p>workspaceでPartを探してクリックしたらEnterキーを押して名前をDoorにしておきます。</p>
-    <p>そうしたらDoorの上でプラスボタンをクリックしてProximityPromptという、Eキーの形をしたものを追加してください。</p>
-    <p>その上でまたプラスボタンをクリックして、Scriptを追加します。</p>
-    <p>ここからコードを書いていきます！</p>
-    <pre><code>
-    local Door = script.Parent.Parent
-    local ProximityPrompt = script.Parent
-    local isOpen = false
-    
-    Door.Anchored = true
-    ProximityPrompt.ActionText = "Open"
-    
-    function toggle()
-        if isOpen then
-            Door.Transparency = 0--完全に不透明
-            Door.CanCollide = true
-            ProximityPrompt.ActionText = "Open"
-        else
-            Door.Transparency = 0.5--少し透ける
-            Door.CanCollide = false
-            ProximityPrompt.ActionText = "Close"
-        end
-        isOpen = not isOpen
+  <h1>ドアを作ろう！</h1>
+
+  <p>前回はパーツを召喚することができましたね。</p>
+  <p>今回は、ゲーム内にあらかじめパーツを置いておきます。</p>
+  <p>上のバーから <strong>Part</strong>（パーツ）をクリックして追加して、拡大・縮小で形を整えてあげてください。</p>
+  <p><code>workspace</code> で Part を探してクリックし、<kbd>Enter</kbd>キーで名前を <code>Door</code> に変更します。</p>
+  <p>その <code>Door</code> の上でプラスボタンをクリックして、<code>ProximityPrompt</code>（Eキーの形をしたやつ）を追加します。</p>
+  <p>さらにその上で Script を追加しましょう。</p>
+
+  <p>ここからコードを書いていきます！</p>
+
+  <pre><code>local Door = script.Parent.Parent
+local ProximityPrompt = script.Parent
+local isOpen = false
+
+Door.Anchored = true
+ProximityPrompt.ActionText = "Open"
+
+function toggle()
+    if isOpen then
+        Door.Transparency = 0 -- 完全に不透明
+        Door.CanCollide = true
+        ProximityPrompt.ActionText = "Open"
+    else
+        Door.Transparency = 0.5 -- 少し透ける
+        Door.CanCollide = false
+        ProximityPrompt.ActionText = "Close"
     end
-    
-    ProximityPrompt.Triggered:Connect(toggle)
-    </code></pre>
-    <p>今まで解説していませんでしたが、マイナスを2つ書くとコメントという状態になり、<br>
-        それ以降の行の文字はプログラムに影響を与えないようになります。</p>
-    <p>コメントを使うとメモをすることができるので、未来の自分のためにどんどん書いてあげてくださいね( ・∇・)！</p>
-    <p>最初の3行はそれぞれドア(Door)、キーボード入力(ProximityPrompt)を受け取るためのもの、<br>
-        そして条件を記録する変数(isOpen)を定義しました。</p>
-    <p>scriptとはこのプログラムを書いた場所自体のことを指します。スクリプトの上はProximityPromptだし、そのさらに上はDoorです。<br>
-    この書き方は便利なんですが、後々他の書き方に置き換えることが多くなるのであまり気にしなくてもいいです！</p>
-    <p>toggle関数はドアの状態を切り替えます。if isOpen thenというのは、変数isOpenの中身がtrue(本当)か確認しているだけです。<br>
-    なので、わざわざisOpen == trueと書く必要はありません！(昔は私もそうやって書いてました、安心してください)</p>
-    <p>Door.Transparencyはドアの透明度、つまりパーツの透明度を設定できるプロパティ(特性)というもので、<br>
-        0から1のどんな数字も入れてOKです。0が不透明で、1が透明になります。</p>
-    <p>Door.CanCollideは、パーツに触れるかどうかを決めるプロパティです。trueなら触れて、falseなら触れません。</p>
-    <p>プロパティって便利でしょ？.(ドット)を打てば他にもたくさん出てくるので、興味があったら試してみてください！</p>
-    <p>同じようにProximityPrompt.ActionTextはProximityPromptが入ってるパーツに近づいた時に表示する文字を設定するやつです。<br>
-    文字を設定するときは必ずダブルクォーテーション("")でくくってね！じゃないとエラーになります。</p>
-    <p>関数の最後のisOpen = not isOpenは、変数の状態を反転させれる便利な文です。</p>
-    <p>本当じゃないってことは嘘だし、嘘じゃないってことは本当ですよね？そんな感じで、前の状態を反転させれます。</p>
-    <p>これを使えるのは本当か嘘かのどっちかが入る変数(booleanというやつ)だけなので注意！</p>
-    <p>最後の行のProximityPrompt.Triggered:Connect(toggle)は、<br>
-    「ProximityPromptのTriggeredってイベントが起きたら、toggle関数を呼んでね」って命令する文です。</p>
-    <p>Triggeredというイベントが起きるのは、あなたがEキーをドアの周りで押したときです。ゲームにはイベントがたくさんあるので、たくさん使っていきましょう！</p>
-    <p>:Connect(toggle)は、イベントが起きたらこの関数(この場合はtoggle)を呼んでねというものです。</p>
-    <p>イベントと関数を繋げることは多いので、ここで覚えちゃいましょう！</p>
-    <p>説明が長くなりましたが、プレイボタンを押して、ドアの周りに行ってからEキーを押すと、ドアの文章がOpenからCloseになって、<br>
-    ドアが半透明になって通り抜けられるようになり、もう一回押すと元通りになると思います。</p>
-    <p>これでドアは完成です！思っていたドアとは違うかもしれませんが、これができるようになると本格的なものも作れるようになっていきますよ！</p>
-    <p>次回は触ったら爆発するパーツを作っていきます！だんだん、やりたいことが多くなってきたんじゃないですか？( ＾∀＾)</p>
-    <a href="createExplosion.html">爆発するパーツを作ろう！</a>
+    isOpen = not isOpen
+end
+
+ProximityPrompt.Triggered:Connect(toggle)</code></pre>
+
+  <p>ここで少し解説タイム！</p>
+  <p>マイナス2つ（<code>--</code>）で始まるのはコメントです。プログラムに影響を与えないメモとして使えます。<br>
+    未来の自分のために、どんどん書いておくと便利ですよ( ・∇・)</p>
+
+  <p>最初の3行は、それぞれ：</p>
+  <ul>
+    <li>ドア（<code>Door</code>）</li>
+    <li>キーボード入力のトリガー（<code>ProximityPrompt</code>）</li>
+    <li>開いてるか閉まってるかの状態（<code>isOpen</code>）</li>
+  </ul>
+
+  <p><code>script</code> はこのスクリプト自身のことです。<code>script.Parent</code> は <code>ProximityPrompt</code> で、その親が <code>Door</code> になります。</p>
+
+  <p><code>toggle</code> 関数は、ドアの状態を切り替える処理です。<br>
+    <code>if isOpen then</code> のように、<code>== true</code> は書かなくてOKです。</p>
+
+  <p><code>Door.Transparency</code> は透明度を表すプロパティで、<code>0</code> が不透明、<code>1</code> が完全に透明です。</p>
+  <p><code>Door.CanCollide</code> は「触れられるかどうか」を表します。</p>
+
+  <p><code>ProximityPrompt.ActionText</code> は、Eキーの横に表示される文字を変えるプロパティです。<br>
+    ダブルクォーテーション（<code>"</code>）で囲むのを忘れずに！</p>
+
+  <p><code>isOpen = not isOpen</code> は、<strong>状態を反転</strong>させる便利な書き方です。<br>
+    <code>true</code> なら <code>false</code> に、<code>false</code> なら <code>true</code> に変わります。</p>
+
+  <p>そして最後の行、</p>
+  <pre><code>ProximityPrompt.Triggered:Connect(toggle)</code></pre>
+  <p>これは、「Eキーが押されたら <code>toggle</code> 関数を呼んでね」という命令です。イベントと関数をつなぐのはよくあるパターンなので、ここで覚えておきましょう！</p>
+
+  <p>プレイボタンを押してドアに近づき、Eキーを押すと：</p>
+  <ul>
+    <li>ドアが半透明になって通り抜けられる！</li>
+    <li>文字が「Close」に変わる！</li>
+    <li>もう一度押すと元通り！</li>
+  </ul>
+
+  <p>これでドアの仕組みはバッチリです！</p>
+  <p>次回は「触ると爆発するパーツ」を作っていきますよ！楽しみになってきましたね( ＾∀＾)</p>
+
+  <p><a href="createExplosion.html">爆発するパーツを作ろう！</a></p>
 </body>
+</html>
