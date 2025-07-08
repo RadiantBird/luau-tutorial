@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>関数とは？ - なんとなくわかるLuau</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      padding: 2em;
+      background: #fff;
+      color: #222;
+    }
+    h1 {
+      color: #607d8b;
+    }
+    code {
+      background-color: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    a {
+      color: #3f51b5;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+    a:hover {
+      border-bottom: 1px solid;
+      color: #e91e63;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>関数とは？</h1>
+
+  <p>
+    人間とはめんどくさがりな生き物です。<br>
+    同じような文章が多くなってきたら、大昔の <strong>COBOL</strong> という言語のように<br>
+    <em>コピペする</em> — そんなやり方はもうやりたくないんですね。
+  </p>
+
+  <p>
+    そこで登場するのが <strong>関数</strong> です！
+  </p>
+
+  <p>
+    関数というのは、「何か入れてくれれば、何か出すよ」っていう機械のようなものです。<br>
+    自動販売機にお金を入れたらジュースが出てくる。<br>
+    製氷機に水を入れたら氷が出てくる。<br>
+    ……お金を入れても反応しない、ぼったくり。それもまた関数です。
+  </p>
+
+  <h2>関数を書いてみよう</h2>
+
+  <pre><code>function myFunc(x)
+    local y = x * 2
+    return y
+end
+
+local answer = myFunc(2)
+print(answer)</code></pre>
+
+  <p>
+    このコードを実行すると、<code>4</code> という数字が出てくるはずです。
+  </p>
+
+  <h3>📖 どう動いているの？</h3>
+  <ul>
+    <li><code>myFunc</code> という関数をコンピューターが作ってくれる（＝使えるようになる）</li>
+    <li><code>myFunc(2)</code> で関数に <code>2</code> を渡す</li>
+    <li><code>x</code> は <code>2</code> に置き換えられる</li>
+    <li><code>y</code> は <code>2 * 2 = 4</code> になる</li>
+    <li><code>return</code> でその <code>4</code> を返す</li>
+    <li><code>answer</code> に返ってきた <code>4</code> が入る</li>
+    <li><code>print(answer)</code> → <strong>4 が表示される！</strong></li>
+  </ul>
+
+  <p>
+    つまり関数は、「入れたら、返ってくる」もの。<br>
+    そして、<strong>同じことを何度も書かずに済む</strong>便利な仕組みなのです。
+  </p>
+
+  <h2>main関数を使ってみよう</h2>
+
+  <pre><code>function main()
+    print("えっと、0返してくれるよね…？")
+end
+
+main()</code></pre>
+
+  <p>
+    関数は <strong>引数（＝中に渡すデータ）</strong> を渡さなくても動きます。<br>
+    上のように <code>()</code> を空にすれば、ただ呼び出すだけでOK。
+  </p>
+
+  <p>
+    実は <code>print</code> も関数だったんですよ……びっくりしました？
+  </p>
+
+  <p>では、また今度！おつかれさまでした( ・∇・)！</p>
+
+  <p><a href="index.html">トップページに戻る</a></p>
+
+</body>
+</html>
