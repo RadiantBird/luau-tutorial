@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>爆発するパーツを作ろう！ - なんとなくわかるLuau</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      padding: 2em;
+      background: #fff;
+      color: #222;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    code {
+      background-color: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    a {
+      color: #3f51b5;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+    a:hover {
+      border-bottom: 1px solid;
+      color: #e91e63;
+    }
+  </style>
+</head>
+
+<body>
+    <h1>爆発するパーツを作ろう！</h1>
+  
+    <p>今回は触れると爆発する、超スリリングなものを作っていきますよ＼＼\\٩( 'ω' )و //／／<br>
+      今回も Part のプロパティとイベントを利用してプログラムを書いていきます！
+    </p>
+  
+    <pre><code>local mine = script.Parent
+  
+  -- パーツの見た目を整える
+  mine.Color = Color3.fromRGB(255, 38, 0) -- 赤色
+  mine.Material = Enum.Material.Neon
+  mine.Anchored = true -- 固定する
+  
+  function boom(touchedPart: BasePart)
+      local explosion = Instance.new("Explosion")
+      explosion.ExplosionType = Enum.ExplosionType.NoCraters -- 地面に穴が開かない爆発になる！
+      explosion.Parent = mine
+      explosion.Position = mine.Position
+  
+      local character = touchedPart:FindFirstAncestorOfClass("Model") -- 親がModelか探す
+      local humanoid: Humanoid? = nil
+      if character then
+          humanoid = character:FindFirstChild("Humanoid")
+      end
+  
+      if touchedPart:IsDescendantOf(character) and humanoid then
+          humanoid.Health = 0
+          print(character, "は爆発に巻き込まれた")
+      else
+          print(character)
+      end
+  end
+  
+  mine.Touched:Connect(boom)</code></pre>
+  
+    <p>mine.Color でパーツの色を、mine.Material で素材を設定できます。Enum.Material.Neon はちょっと目立つのでおすすめです！</p>
+  
+    <p>boom 関数の中では、触れたパーツがプレイヤーかどうかを調べて、爆発イベントを起こします。</p>
+  
+    <p>FindFirstAncestorOfClass("Model") でキャラクターのモデルを探し、Humanoid があったら爆破！<br>
+      <code>IsDescendantOf</code> を使って、そのパーツがキャラの一部かどうかをチェックしています。</p>
+  
+    <p>最後に、<code>mine.Touched:Connect(boom)</code> で、触れたら boom 関数が呼ばれるようになります！</p>
+  
+    <p>さて、これをいくつも作るには？コピペ？それは古代の知恵！次はテーブルを使いましょう！</p>
+  
+    <p>パーツを 3 個くらい作って <strong>Mines</strong> という名前のフォルダに入れたら準備OK。スクリプト名は <strong>MineScript2</strong> にしてね！</p>
+  
+    <pre><code>local mines = workspace.Mines:GetChildren()
+  
+  for i, mine in ipairs(mines) do
+      -- 見た目を整える
+      mine.Color = Color3.fromRGB(255, 38, 0)
+      mine.Material = Enum.Material.Neon
+      mine.Anchored = true
+  
+      function boom(touchedPart: BasePart)
+          local explosion = Instance.new("Explosion")
+          explosion.ExplosionType = Enum.ExplosionType.NoCraters
+          explosion.Parent = mine
+          explosion.Position = mine.Position
+  
+          local character = touchedPart:FindFirstAncestorOfClass("Model")
+          local humanoid: Humanoid? = nil
+          if character then
+              humanoid = character:FindFirstChild("Humanoid")
+          end
+  
+          if touchedPart:IsDescendantOf(character) and humanoid then
+              humanoid.Health = 0
+              print(character, "は爆発に巻き込まれた")
+          else
+              print(character)
+          end
+      end
+  
+      mine.Touched:Connect(boom)
+  end
+  
+  print("地雷の準備ができました...(O_O)")</code></pre>
+  
+    <p>for 文と <code>ipairs</code> のコンビが最強すぎる...！コピペしなくても爆弾量産できます！</p>
+  
+    <p>ここまで来たあなたはもう「地雷職人」です！次回は遠くから操作できる RemoteEvent に進みますよ！</p>
+  
+    <a href="RemoteEvent.html">RemoteEvent を使ってみよう！</a>
+  </body>
