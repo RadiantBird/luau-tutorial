@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <title>if文とは？ - なんとなくわかるLuau</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      padding: 2em;
+      background: #fff;
+      color: #222;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    code {
+      background-color: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    a {
+      color: #3f51b5;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+    a:hover {
+      border-bottom: 1px solid;
+      color: #e91e63;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>if文（条件分岐）とは？</h1>
+
+  <p>
+    あなたは、外にいる時に雨が降っていたらどうしますか？<br>
+    傘をさす、近くの建物に入る、そのまま浴びる…いろんな選択をしたと思います。
+  </p>
+
+  <p>
+    コンピューターも選択ができます。それが <strong>if文</strong> です！
+  </p>
+
+  <p>さっそくやってみましょう：</p>
+
+  <pre><code>local x = 1
+
+if x == 1 then
+    print("xは1です")
+end</code></pre>
+
+  <p>
+    新しく出てきたのが <code>if</code> 文です。<br>
+    <code>x == 1</code> の部分を <strong>条件</strong> といいます。
+  </p>
+
+  <p>
+    <code>==</code> は「左と右が同じかどうか」をチェックします。<br>
+    （※ 厳密にはもっと奥深いけど、それはまた今度！）
+  </p>
+
+  <p>
+    コンピューターは嘘をつきません。<br>
+    このまま実行してみると、<code>xは1です</code> と表示されるはずです。
+  </p>
+
+  <p>では、<code>x</code> を 2 に変えてみましょう：</p>
+
+  <pre><code>local x = 2
+
+if x == 1 then
+    print("xは1です")
+end</code></pre>
+
+  <p>おや？ 今回は何も言いません。</p>
+
+  <p>そう、<strong>条件が一致したときしか中身は実行されない</strong>んです！</p>
+
+  <p>
+    でも、これだとちょっと不便ですね。<br>
+    「そうじゃないとき」も知りたい。そんなときは <code>else</code> を使います。
+  </p>
+
+  <pre><code>local x = 2
+
+if x == 1 then
+    print("xは1です")
+else
+    print("xは1じゃないよ")
+end</code></pre>
+
+  <p>実行すると、「xは1じゃないよ」と表示されると思います。</p>
+
+  <p>これは、条件に一致しなかったので <code>else</code> の方を実行したということです。</p>
+
+  <p>
+    さらに、<strong>複数の条件を確かめたい</strong>ときもありますよね？<br>
+    たとえば「雨は降ってないけど曇ってるときはどうするか？」みたいな。
+  </p>
+
+  <p>そんなときは <code>else if</code> を使います。</p>
+
+  <pre><code>local x = 2
+
+if x == 1 then
+    print("xは1です")
+else if x == 2 then
+    print("xは2です")
+else
+    print("xは1でも2でもないよ")
+end</code></pre>
+
+  <p>実行すると <code>xは2です</code> と表示されると思います。</p>
+
+  <p>
+    こんなふうに、<strong>コンピューターにも「選択」をさせることができる</strong>のが if文です。
+  </p>
+
+  <p>
+    条件が多くなりすぎて困るようになるのは、また後の話にしましょう _(:3」z)_ 
+  </p>
+
+  <p><a href="loops.html">▶ 次は「ループ（繰り返し）」を学ぼう！</a></p>
+
+</body>
+</html>
