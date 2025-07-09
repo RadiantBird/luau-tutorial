@@ -52,18 +52,19 @@
     task.wait(1)
     RemoteEvent:FireAllClients()</code></pre>
     <p>task.waitというのは、任意の秒数の間処理を休ませることができる便利な関数です。<br>
+    実はドット2つを入力すると前の文章と次の文章を連結して1つにできるんです！<br>
     次にStarterPlayerというフォルダの形をしたものをクリックして、その中のStarterPlayerScriptsにLocalScriptを追加してください。<br>
-    注意:白色の方ではなく青色の方です！Scriptの種類が違うと、正しく実行できないので気をつけてください。</p>
+    注意:白色の方ではなく青色の方です！Scriptの種類が違うと、正しく実行できないので気をつけてください。<br>
+    (つまり、Scriptがサーバー用で、LocalScriptがクライアント用です)</p>
     <pre><code>local ReplicatedStorage = game:GetService("ReplicatedStorage")
     local RemoteEvent = ReplicatedStorage:WaitForChild("RemoteEvent")
     
-    RemoteEvent:FireServer()
     RemoteEvent.OnClientEvent:Connect(function()
-        print("サーバーより愛をこめて")
+    print("サーバーより愛をこめて")
     end)</code></pre>
     <p>これで必要な部品は揃いました！( ・∇・)<br>
     プレイボタンを押すと、先頭が緑色のサーバーからのメッセージと、青色のクライアントからのメッセージが表示されるはずです。<br>
-    クライアントというのは、サーバーではない、今あなたが使っているコンピュータのことを指します。<br>
+    クライアントというのは、サーバーではない、今あなたが使っているコンピュータやプレイヤー本人の動きを担当するプログラムのことです。<br>
     これでRemoteEventを使って、好きな時にイベントを自分で起こすことができますね！<br>
     次回はRemoteEventと今までのことの応用、そして新しくRaycastingという技術を使って、レーザー銃を作っていきます！＼＼\\٩( 'ω' )و //／／ </p>
     <a href="laserGun.html">レーザー銃を作ろう！</a>
