@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>レーザー銃を作ろう！ - なんとなくわかるLuau</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      padding: 2em;
+      background: #fff;
+      color: #222;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    code {
+      background-color: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    a {
+      color: #3f51b5;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+    a:hover {
+      border-bottom: 1px solid;
+      color: #e91e63;
+    }
+  </style>
+</head>
+
+<body>
+    <h1>レーザー銃を作ろう！</h1>
+  
+    <p>今回はレーザー銃でいろんなものを「消して」いきましょう！</p>
+  
+    <p>
+      実はこんなもの作らなくても、ツールボックスというところにあります。
+      でも、無料モデルばかり使ってしまうとゲームの独創性が失われて、
+      <strong>虚無ゲー</strong>になるだけでなく、
+      悪質なスクリプトによってゲームが壊れることもあるので、
+      なるべく使わないことをおすすめします。
+    </p>
+  
+    <p>
+      まずは Workspace に新しく <code>Tool</code> を追加してください
+      （検索すれば出てきます）<br>
+      次にその中に <code>Part</code> を追加して、Enterキーで名前を <code>Handle</code> に変更してください。
+      （今回はこの名前が超重要です！）<br>
+      最後に Tool に <code>Script</code> と <code>LocalScript</code>、
+      <code>RemoteEvent</code>（名前を <code>LaserEvent</code> に変更）を追加しましょう。
+    </p>
+  
+    <p>それではコーディングしていきます！</p>
+  
+    <p><strong>まずは LocalScript:</strong></p>
+  
+    <pre><code>local laserGun = script.Parent
+  local player = game.Players.LocalPlayer
+  local mouse = player:GetMouse()
+  local LaserEvent = laserGun:WaitForChild("LaserEvent")
+  
+  mouse.Button1Down:Connect(function()
+      local origin = laserGun.Handle.Position
+      local direction = (mouse.Hit.Position - origin).Unit * 1000 --これで方向と長さを決める！
+      local ray = RaycastParams.new()
+      ray.FilterDescendantsInstances = {player.Character, laserGun.Handle} --当たっても無視する対象
+      ray.FilterType = Enum.RaycastFilterType.Exclude
+  
+      local result = workspace:Raycast(origin, direction, ray)
+      if result then
+          print(result.Instance, "に命中！")
+          print(string.format("距離: %.2f 座標: (%.2f, %.2f, %.2f)",
+              result.Distance,
+              result.Position.X,
+              result.Position.Y,
+              result.Position.Z
+          ))
+          LaserEvent:FireServer(result.Instance)
+      else
+          print("命中しなかったぞ！")
+      end
+  end)</code></pre>
+  
+    <p>
+      やっていることはシンプルで、マウス（通常は左クリック）を押すと1000の長さの光線を飛ばし、
+      その先にあるパーツを表示してサーバーに送信しているだけです。
+    </p>
+  
+    <p>
+      なぜ処理をサーバーとクライアントで分けているかというと、セキュリティのためです。<br>
+      ゲームにはチーターという悪さをするプレイヤーが少なからず存在します。<br>
+      他のプレイヤーがいじめられたり、サーバーに被害が出たりしないように、<strong>サーバー側で安全チェック</strong>するようにしているのです。
+    </p>
+  
+    <p><strong>次はサーバーの Script:</strong></p>
+  
+    <pre><code>local laserGun = script.Parent
+  local LaserEvent = laserGun:WaitForChild("LaserEvent")
+  
+  local ExcludeParts = {
+      [workspace.Baseplate] = true, --「Workspace に Baseplate がない」という意味のエラーが出たら、ここを消してOK
+      [workspace.SpawnLocation] = true,
+  }
+  
+  local VALID_DISTANCE = 1000
+  
+  function getDistance(a: BasePart, b: BasePart): number?
+      if a:IsA("BasePart") and b:IsA("BasePart") then
+          return (a.Position - b.Position).Magnitude
+      else
+          warn("a と b の両方が BasePart ではありません。")
+          return nil
+      end
+  end
+  
+  LaserEvent.OnServerEvent:Connect(function(player, target: Instance)
+      if target:IsA("BasePart") then
+          local distance = getDistance(laserGun.Handle, target)
+          if distance and distance <= VALID_DISTANCE and not ExcludeParts[target] then
+              print(target, "をこの世から消してやったぞ！")
+              target:Destroy()
+          else
+              if ExcludeParts[target] then
+                  print(target, "は除外対象です")
+              else
+                  print(target, "は遠すぎます！（不正の可能性あり）")
+              end
+          end
+      else
+          print(target, "はパーツではありません。")
+      end
+  end)</code></pre>
+  
+    <p>
+      <code>LaserEvent</code> を受け取って、それが正常なものか確認し、対象を削除しています。<br>
+      <code>VALID_DISTANCE</code> のように変数名を全部大文字にするのは、「これは定数だから変更しないでね」という目印です。<br>
+      <code>ExcludeParts</code> に消したらまずいものを登録しておくと、安全にレーザー銃が使えます。
+    </p>
+  
+    <p>
+      <code>target:Destroy()</code> を使うと、文字通り「問答無用で」対象をこの世から消すことができます。  
+      でも<strong>とても危険な関数</strong>なので、必ず安全チェックをしてから使うようにしましょう！(・∀・)
+    </p>
+  
+    <p>
+      この時点でもう、ゲームで使えるレベルの高品質なレーザー銃が完成しています！<br>
+      あとは <code>Handle</code> の形を整えたり、見た目をカスタマイズしてあげてください。
+    </p>
+  
+    <hr>
+  
+    <p>
+      🔍 <strong>ここで問題！</strong><br>
+      <code>target</code> を削除するのではなく、もしそれがプレイヤーのキャラクターだったとき、<strong>ダメージを与えるにはどうすればよいでしょうか？</strong><br>
+      ヒントは <a href="createExplosion.html">爆発するパーツを作ろう！</a> の中にあります。  
+      そこで紹介した <code>Humanoid</code> にダメージを与える方法を使ってみてください！
+    </p>
+  
+    <p>
+      自分でコーディングできるようになれば、あなたはもう一人前ということです( ・∇・)！<br>
+      次回は「レーザーを見えるようにする」「効果音を追加する」といった演出面もやっていきます！
+    </p>
+  </body>
