@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>レーザー銃をもっと良くする - なんとなくわかるLuau</title>
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      line-height: 1.8;
+      padding: 2em;
+      background: #fff;
+      color: #222;
+    }
+    h1 {
+      color: #e91e63;
+    }
+    code {
+      background-color: #eee;
+      padding: 0.2em 0.4em;
+      border-radius: 4px;
+      font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+    }
+    pre {
+      background-color: #f5f5f5;
+      padding: 1em;
+      overflow-x: auto;
+      border-radius: 6px;
+    }
+    a {
+      color: #3f51b5;
+      text-decoration: none;
+      border-bottom: 1px dotted;
+    }
+    a:hover {
+      border-bottom: 1px solid;
+      color: #e91e63;
+    }
+  </style>
+</head>
+
+<body>
+    <h1>レーザー銃をもっと良くする</h1>
+    <p>
+      今回は<a href="laserGun.html">前回のレーザー銃</a>に音と光線の可視化、そしてキャラクターにダメージを与えるようにする改良を施しますよ( ・∇・)！<br>
+      まずはLocalScriptをこんな感じに変更:
+    </p>
+  
+    <pre><code>local laserGun = script.Parent
+  local player = game.Players.LocalPlayer
+  local mouse = player:GetMouse()
+  local LaserEvent = laserGun:WaitForChild("LaserEvent")
+  
+  mouse.Button1Down:Connect(function()
+      local origin = laserGun.Handle.Position
+      local direction = (mouse.hit.Position - origin).Unit * 1000
+      local ray = RaycastParams.new()
+      ray.FilterDescendantsInstances = {player.Character, laserGun.Handle}
+      ray.FilterType = Enum.RaycastFilterType.Exclude
+  
+      local result = workspace:Raycast(origin, direction, ray)
+      if result then
+          print(result.Instance, "に命中！")
+          print(string.format("距離: %.2f 座標: (%.2f, %.2f, %.2f)",
+              result.Distance,
+              result.Position.X,
+              result.Position.Y,
+              result.Position.Z
+          ))
+          LaserEvent:FireServer(result.Instance, result.Position)
+      else
+          print("命中しなかったぞ！")
+          local position = origin + direction
+          LaserEvent:FireServer(nil, position)
+      end
+  end)</code></pre>
+  
+    <p>
+      <code>local position = origin + direction</code> で、当たってなくても1000の距離移動した座標を取得できます！<br>
+      resultがnil(失敗)してもあとで光線が可視化されるようにイベントの引数も追加しています。<br>
+      次はScriptです:
+    </p>
+  
+    <pre><code>local laserGun = script.Parent
+  local LaserEvent = laserGun:WaitForChild("LaserEvent")
+  local ExcludeParts = {
+      [workspace.Baseplate] = true,
+      [workspace.SpawnLocation] = true,
+  }
+  local VALID_DISTANCE = 1000
+  
+  local GunSound = Instance.new("Sound")
+  GunSound.SoundId = "rbxassetid://8561500387"
+  GunSound.Parent = laserGun.Handle
+  
+  function getDistance(a:BasePart, b:BasePart): number?
+      if a:IsA("BasePart") and b:IsA("BasePart") then
+          return (a.Position - b.Position).Magnitude
+      else
+          warn("aとbの両方がBasePartではありません。")
+          return nil
+      end
+  end
+  
+  local lasers = {}
+  
+  function makelaser(from:Part, target:Vector3, color:Color3)
+      local part = Instance.new("Part")
+      local distance = (from.Position - target).Magnitude
+      part.Anchored = true
+      part.Material = Enum.Material.Neon
+      part.Color = color
+      part.Size = Vector3.new(0.5, 0.5, distance)
+      part.CFrame = CFrame.new(from.Position, target) * CFrame.new(0, 0, -distance / 2)
+      part.CanCollide = false
+      part.CanTouch = false
+      part.CanQuery = false
+      part.Transparency = 0.5
+      part.Parent = workspace
+      table.insert(lasers, part)
+  end
+  
+  LaserEvent.OnServerEvent:Connect(function(player, target:Instance, position:Vector3)
+      GunSound:Play()
+      for i = #lasers, 1, -1 do
+          local v = table.remove(lasers, i)
+          v:Destroy()
+      end
+  
+      if target then
+          if target:IsA("BasePart") then
+              makelaser(laserGun.Handle, position, Color3.fromRGB(0, 253, 255))
+              local distance = getDistance(laserGun.Handle, target)
+              local character = target:FindFirstAncestorOfClass("Model")
+              local humanoid: Humanoid? = nil
+              local isCharacter = false
+  
+              if character then
+                  humanoid = character:FindFirstChild("Humanoid")
+              end
+  
+              if target:IsDescendantOf(character) and humanoid then
+                  isCharacter = true
+              end
+  
+              if distance <= VALID_DISTANCE and not ExcludeParts[target] then
+                  if isCharacter then
+                      humanoid.Health -= 10
+                      print(character, "に10ダメージ！")
+                  else
+                      print(target, "をこの世から消してやったぞ！")
+                      target:Destroy()
+                  end
+              else
+                  if ExcludeParts[target] then
+                      print(target, "は除外対象です")
+                  else
+                      print(target, "は遠すぎます！(不正の可能性あり)")
+                  end
+              end
+          end
+      else
+          makelaser(laserGun.Handle, position, Color3.fromRGB(0, 253, 255))
+      end
+  end)</code></pre>
+  
+    <p>
+      <code>makelaser</code> 関数を使って、Partを2点間に繋いで、色も変更できる機能を追加しました。<br>
+      <code>CFrame</code> は座標と回転を便利に扱える型です。<br>
+      <code>CFrame.new(from.Position, target) * CFrame.new(0, 0, -distance / 2)</code> のように使えば、方向も長さも自動で調整できます。
+    </p>
+  
+    <p>
+      <code>Instance.new("Sound")</code> で音を鳴らせるパーツを作り、<code>SoundId</code> を指定して再生音を決めます。<br>
+      BGMなどでなければ、音をどの場所から鳴らすかを確認しましょう！
+    </p>
+  
+    <p>
+      「キャラクターにダメージを与える」ための処理は以下のように行います：
+    </p>
+  
+    <pre><code>local character = target:FindFirstAncestorOfClass("Model")
+  local humanoid: Humanoid? = nil
+  local isCharacter = false
+  
+  if character then
+      humanoid = character:FindFirstChild("Humanoid")
+  end
+  
+  if target:IsDescendantOf(character) and humanoid then
+      isCharacter = true
+  end</code></pre>
+  
+    <p>
+        まず、<code>target</code> は何かのパーツ（例: 頭・胴体・部品など）です。<br>
+        このパーツが「プレイヤーの体の一部かどうか」を調べるには、次のようなステップを踏みます。
+    </p>
+
+    <ol>
+        <li>
+        <strong><code>FindFirstAncestorOfClass("Model")</code> で親のModelを探す</strong><br>
+        パーツ（target）がどこかのModel（キャラの本体）に属していれば、そのModelを取得します。<br>
+        ※ただのブロックなどの場合は、Modelが見つからず <code>nil</code> になります。
+        </li>
+        <li>
+        <strong>仮の <code>humanoid</code> 変数を <code>nil</code> にしておく</strong><br>
+        この変数には、キャラなら必ず持っている「Humanoid」オブジェクトをあとで入れます。
+        </li>
+        <li>
+        <strong>もしModelが見つかったら <code>Humanoid</code> を探す</strong><br>
+        モデル（例: プレイヤーのキャラ）に <code>Humanoid</code> があるかどうか確認します。<br>
+        これは「プレイヤーキャラか？」を判断する基準になります。
+        </li>
+        <li>
+        <strong>最後に <code>IsDescendantOf</code> を使って確認</strong><br>
+        <code>target</code> がそのModelにちゃんと含まれていて、さらにHumanoidもあれば、<br>
+        「このパーツはプレイヤーの体の一部だ！」と判断できます。
+        </li>
+    </ol>
+
+    <p>
+        こうして <code>isCharacter = true</code> としておけば、そのあとで「プレイヤーならダメージ」「ブロックなら削除」など、条件を分けて処理できるようになります！
+    </p>
+  
+    <p>
+      では次回は、コードの表現力が激増する「構造体風テーブル」と「オブジェクト指向風テーブル」について学んでいきましょう！<br>
+      <a href="advance-table.html">テーブルをもっと知ろう！</a>
+    </p>
+</body>
